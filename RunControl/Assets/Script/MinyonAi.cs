@@ -7,6 +7,8 @@ public class MinyonAi : MonoBehaviour
 {
     NavMeshAgent agent;
     [SerializeField] GameObject target;
+    [SerializeField] float delta=4;
+    Vector3 targetPosition;
 
     void Start()
     {
@@ -16,6 +18,11 @@ public class MinyonAi : MonoBehaviour
 
     void Update()
     {
-        agent.SetDestination(target.transform.position);
+        SetTargetPosition();
+        agent.SetDestination(targetPosition);
+    }
+    void SetTargetPosition()
+    {
+        targetPosition=new Vector3(target.transform.position.x,target.transform.position.y, target.transform.position.z-delta);
     }
 }

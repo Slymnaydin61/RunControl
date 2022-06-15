@@ -8,30 +8,44 @@ public class PlayerCountManager : MonoBehaviour
     [SerializeField] int minyonCount = 1;
     [SerializeField] int newMinyonCount;
     int minyonMathFactor;
+    float minyonSpawnTimer;
     Vector3 spawnPosition;
 
     void Update()
     {
         ActiviteMinyon();
         DeActiviteMinyon();
+        DelayMinionsSpawn();
+        FixMinionCount();
+    }
+    void FixMinionCount()
+    {
+        if (minyonCount < 1)
+            minyonCount = 1;
     }
     void OnTriggerEnter(Collider other)
     {
+        minyonSpawnTimer = 0.4f;
         if(other.tag== "Untagged")
             return;
         spawnPosition= other.transform.position;
         minyonMathFactor = int.Parse(other.name);
         SendMessage(other.tag);
     }
+    void DelayMinionsSpawn()
+    {
+        minyonSpawnTimer-=Time.deltaTime;
+    }
     void ActiviteMinyon()
     {
         foreach (var minyon in minyons)
         {
-            if (minyonCount < newMinyonCount && !minyon.activeInHierarchy)
+            if (minyonCount < newMinyonCount && !minyon.activeInHierarchy&&minyonSpawnTimer<0)
             {
                 minyon.SetActive(true);
                 minyon.transform.position = spawnPosition;
                 minyonCount++;
+                minyonSpawnTimer = 0.4f;
             }
         }
     }
@@ -68,7 +82,5 @@ public class PlayerCountManager : MonoBehaviour
         newMinyonCount = minyonCount - minyonMathFactor;
 
     }
-
-
 
 }
